@@ -1,0 +1,147 @@
+- Init project, Directory Structure
+	- Init project:
+		- Laravel Installer (Via Laravel Installer): 
+			- composer global laravel/installer
+			- laravel new blog
+		- Composer Create-Project (Via Composer Create-Project):
+			- composer create-project --prefer-dist laravel/laravel blog
+	- Directory Structure:
+		- app: Chứa core code để điều khiển mvc 
+		- bootstrap: 
+			- Chứa file thiết lập để chạy ứng dụng và file config nạp class tự động
+			- Folder cache				: tối ưu hóa hiệu suất app
+		- config:
+			- Chứa file config của app
+			- Config db
+			- Config session, mail, server cache, view...
+		- database:
+			- factories					: tạo dữ liệu mẫu
+			- migration
+			- seed						: chứa file php cho phép artisan đưa bảng csdl với dữ liệu mong muốn
+			- storage					: chứa các tập tin được sinh ra khi chạy app
+			- vendor					: chứa core của laravel
+			- .env						: chứa các config về các thông số cấu hình của app: dữ liệu cấu hình email, cấu hình server cache…
+- Migration:
+	- Cho phép định nghĩa các bảng CSDL, quản lý database
+	- Function:
+		- Up():  Thực thi migration
+		- Down():
+			- Thực thi đoạn lệnh rollback
+			- Thực thi đảo ngược với hàm Up()
+	- Code:
+		- migrate:refresh					: Rollback all migration và run migarate (run down() -> up() trong migration)
+		- migrate:refresh --seed				: Chạy các seed
+		- migrate:rollback -step=n 				: Run down() với số batch muốn rollback
+	- Schema:
+		- schema::create					: Tạo table db
+		- schema::hasTable('nameTB')			: Kiểm tra table tồn tại
+		- schema::hasColumn('nameTB', 'titleTB')		: Kiểm tra column table tồn tại
+		- Schema::rename('nameTB', 'newNameTB')	: Đổi tên bảng
+		- Schema::drop('nameTB')				: Xóa bảng
+		- Schema::dropIfExists('nameTB') 			: Xóa bảng
+		
+- Seeder, factory, faker
+	- Seeder:
+		- Tạo dữ liệu nhanh chóng
+		- Code:
+			- db:seed					: Thực thi chèn dữ liệu
+			- make:seed SupplierTableSeeder		: Tạo file seeder
+	- Model Factories:
+		- Sinh ra lượng dữ liệu lớn thay vì nhập tay như seed
+		- Code:
+			- make:factory SupplierFactory		: Tạo factory
+	- Faker:
+		- Thư viện hỗ trợ tạo random dữ liệu
+		
+- Model : 
+   - Mass assignment:
+   	- Tự động gán param của http request vào biến hoặc đối tượng
+   	- Fillable							: Cho phép param đó có thể sử dụng tính năng Mass Assignment,
+   	- Guarded							: Ngược fillable
+   - Relationship: (5 loại)
+   	- One to One
+   	- One to many
+   	- Many to Many
+   	- Has many through						: Nhiều nhiều qua lại trung gian
+   	- Polymorphic relations					: Đa hình
+   	- Many to many polymorphic relations			: Nhiều đa hình
+   - Accessors, mutators:
+   	- Format data của khi lấy ra hoặc thêm vào
+   	- Models:
+   		- Định nghĩa Mutators				: func setMyFuncAttribute
+   		- Định nghĩa Accessors				: func getMyFuncAttribute
+   - Eager loading:
+   	- Giải quyết vấn đề N + 1 truy vấn
+   	- Khi gọi relationship => dữ liệu quan hệ là lazy loaded
+   	- Relationship chưa được load ra trước khi gọi tới. Khi gọi relationship sẽ thực hiện N+1 truy vấn
+   	- Dùng with()							: Relationship sẽ được load ra cùng model
+   	- Eager lồng							: $books = Book::with('author.contacts')->get();
+   	- Eager các cột						: $books = Book::with('author:id,name')->get();
+   	- With()							: Thực thi ngay sau câu truy vấn đầu
+   	- Load()							: Chạy phương thức đầu tiên load ra các bản ghi, và load relationship ở thời điểm sau
+- Route:
+   - Route & Resource controller
+   	- Route:
+   		- Thực hiện điều hướng url
+   		- Namespace được chỉ định với một nhóm controller
+	- Resource:
+		- Giúp route clean
+   - Middleware:
+   	- Code trung gian giữa request và response
+	- Là một cơ chế cho phép bạn tham gia vào luồng xử lý request của một ứng dụng Laravel
+   	- Nếu middleware có thể thực thi trong mọi HTTP request, liệt kê tên class middleware trong thuộc tính $routeMiddleware của Kernel.php
+   	- 2 loại middleware:
+   		- Before						: Chạy trước khi yêu cầu được xử lý và phản hồi được tạo ra
+   		- After							: Chạy sau khi yêu cầu được ứng dụng xử lý và phản hồi đã được xây dựng
+   - Advance: REST & RESTful
+   	- Để thực hiện CRUD 1 resource để tạo thuận lợi cho việc tái sử dụng.
+   	- Web API hoặc HTTP API quy định một cách thống nhất việc quản lý các resource của web
+   	- REST (Representational State Transfer) 			: Là dạng cấu trúc dùng chuyển đổi dữ liệu dựa trên giao thức không trạng thái (thường là HTTP) để tương tác
+   	- API (Application Programming Interface) 			: Phương thức kết nối với các thư viện và ứng dụng khác
+   	- RESTful API							: Là những API đi theo cấu trúc REST.
+   	- Method HTTP:
+   		- GET							: Truy cập tài nguyên (READ)
+   		- POST							: Tạo tài nguyên mới ( CREATE)
+   		- PUT/ PATCH						: Cập nhật, sửa đổi tài nguyên (UPDATE)
+   		- DELETE						: Xóa tài nguyên ( DELETE)
+   		
+   		
+- Controller:
+   - Auth:
+   	- Config/auth.php:
+   		- Guard:
+   			- Cung cấp logic để xác thực người dùng
+   			- Session guard				: Duy trì đăng nhập trong mỗi lần request = cookie
+   			- Token guard					: Xác thực người dùng = cách kiểm tra token hợp lệ trong mỗi lần request
+   		   	=> Xác định logic của việc xác thực, và không cần thiết lấy data hợp lệ từ phía back-end để xác thực
+   		   	=> Chỉ cần kiểm tra sự có mặt của một thông tin cụ thể trong headers của request và xác thực người dùng dựa trên điều đó
+   		- Providers:
+			- Dùng lấy ra dữ liệu từ backend
+			- Guard yêu cầu xác thực hợp lệ từ backend thì provides sẽ thực hiện truy suất
+	- Authentication:
+		- Là một hành động xác thực một cái gì đó có được hoạt động tiếp hay không hay dừng lại
+   - Eloquent orm + query builder
+	- Eloquent:
+		- Cung cấp một API ActiveRecord đơn giản và tiện lợi cho giao tiếp với database
+		- Chunk						: Xử lí nhiều dữ liệu
+		- Cursors						: Duyệt record bằng cách sử dụng cursors => sử dụng để giảm bộ nhớ khi gặp dữ liệu lớn
+	- Query builder:
+		- Sử dụng PDO(là một lớp truy xuất cơ sở dữ liệu cung cấp một phương pháp thống nhất để làm việc với nhiều loại cơ sở dữ liệu khác nhau) parameter binding để bảo vệ ứng dụng của bạn khỏi tấn công SQL injection
+	- So sánh
+		- Tính Bảo mật					: Query builder và Eloquent đều sử dụng : 'PDO parameter binding' => tránh được lỗi sql injection
+		- Tính tương tác					: Có thể sử dụng tất cả các function Query Builder trong Eloquent nhưng không thể sử dụng các function Eloquent trong Query Builder
+		- Eloquent: 
+			- Có các hàm được laravel xây dựng sẵn nên ngắn gọn và dễ hiểu hơn
+			- Dễ dàng liên kết giữa các bảng trong database
+			- Eloquent chỉ thực hiện được những truy vấn không quá phức tạp
+		- Query builder:
+			- Thực hiện những truy vấn phức tạp
+		- Hiệu suất: Eloquent chậm hơn Query
+   - CSRF Protection:
+	- Cross-site request forgery là giả mạo yêu cầu trên trang web
+   + Advance: Transaction laravel, Helpers, Localization(i18n), repository, cache
+- Blade Template
+- Bower, laravel mix
+	- Gói các thư viện
+- Service provider, service container
+
